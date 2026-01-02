@@ -1,4 +1,1 @@
-fastapi==0.104.1
-uvicorn==0.24.0
-python-dotenv==1.0.0
-mangum==0.17.0
+# No external dependencies required - using only Python standard library
