@@ -1,0 +1,23 @@
+{
+    "9876543210": {
+        "name": "Shubham Gundu",
+        "plan": "Unlimited 5G",
+        "data_limit": "1.5 GB/day",
+        "data_used": "1.4 GB",
+        "validity": "24 Days",
+        "last_bill": "Rs. 299",
+        "status": "Active",
+        "history": [
+            {
+                "date": "2025-12-28",
+                "query": "Slow internet",
+                "resolution": "Network reset from backend"
+            },
+            {
+                "date": "2025-12-30",
+                "query": "Data balance check",
+                "resolution": "Provided via SMS"
+            }
+        ]
+    }
+}

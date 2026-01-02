@@ -1,0 +1,9 @@
+[
+    {
+        "ticket_id": "TIC-10293",
+        "phone_number": "9876543210",
+        "issue": "Slow 4G in Mumbai area",
+        "status": "In Progress",
+        "created_at": "2026-01-01"
+    }
+]

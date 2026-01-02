@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtel Care | AI Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --airtel-red: #E40000;
+            --airtel-dark-red: #B30000;
+            --bg-light: #F8F9FA;
+            --text-main: #1A1A1A;
+            --text-muted: #666666;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --border-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--airtel-red);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar .profile {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dashboard Container */
+        .main-container {
+            flex: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .main-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #EDEDED;
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .balance-header span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .balance-header .tag {
+            background: #FFF0F0;
+            color: var(--airtel-red);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .balance-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .detail-item {
+            text-align: left;
+        }
+
+        .detail-item .label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #EDEDED;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .action-btn i {
+            color: var(--airtel-red);
+        }
+
+        .action-btn span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Help Section (Chat) */
+        .chat-section {
+            background: white;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #EDEDED;
+            min-height: 400px;
+            max-height: 500px;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .chat-header .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+        }
+
+        #chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            border-radius: 12px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--airtel-red);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: #F4F4F4;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-indicator {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 0 20px 10px;
+            display: none;
+        }
+
+        .input-area {
+            padding: 16px;
+            border-top: 1px solid #F0F0F0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            border: 1px solid #E0E0E0;
+            border-radius: 24px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            outline: none;
+            background: #F9F9F9;
+        }
+
+        .input-area input:focus {
+            border-color: var(--airtel-red);
+            background: white;
+        }
+
+        .send-btn {
+            background: var(--airtel-red);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .send-btn:hover {
+            background: var(--airtel-dark-red);
+        }
+
+        /* Bottom Nav (Fake) */
+        .bottom-nav {
+            background: white;
+            border-top: 1px solid #EDEDED;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: 25px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--airtel-red);
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Suggestions */
+        .suggestions {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 20px;
+            scrollbar-width: none;
+        }
+
+        .suggestions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .suggestion-chip {
+            background: white;
+            border: 1px solid #E0E0E0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--airtel-red);
+            color: var(--airtel-red);
+        }
+
+        .calling-animation {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i data-lucide="phone"></i> airtel
+        </div>
+        <div class="profile">
+            <i data-lucide="user" size="20"></i>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Balance Section -->
+        <div class="balance-card">
+            <div class="balance-header">
+                <span>Prepaid • 9876543210</span>
+                <div class="tag">ACTIVE</div>
+            </div>
+            <div class="balance-details">
+                <div class="detail-item">
+                    <span class="label">Data Left</span>
+                    <span class="value">1.4 GB / 1.5 GB</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Validity</span>
+                    <span class="value">Valid for 24 Days</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-btn">
+                <i data-lucide="zap" size="20"></i>
+                <span>Recharge</span>
+            </div>
+            <div class="action-btn">
+                <i data-lucide="credit-card" size="20"></i>
+                <span>Pay Bills</span>
+            </div>
+            <div class="action-btn">
+                <i data-lucide="gift" size="20"></i>
+                <span>Rewards</span>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+            <div class="chat-header">
+                <div class="status-indicator"></div>
+                <h2>Airtel Help Center</h2>
+            </div>
+
+            <div id="chat-window">
+                <div class="message ai-message">
+                    Hi! I'm your Airtel assistant. How can I help you today?
+                </div>
+            </div>
+
+            <div class="suggestions">
+                <div class="suggestion-chip" onclick="sendSuggestion('How it works?')">How it works?</div>
+                <div class="suggestion-chip" onclick="sendSuggestion('How to check data balance?')">Data Balance</div>
+                <div class="suggestion-chip" onclick="sendSuggestion('I want to upgrade my plan')">Upgrade Plan</div>
+                <div class="suggestion-chip" onclick="sendSuggestion('Network issues in my area')">Network Issues</div>
+            </div>
+
+            <div id="typing-indicator" class="typing-indicator">Assistant is typing...</div>
+
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ask me something..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">
+                    <i data-lucide="send" size="18"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <i data-lucide="home" size="22"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item">
+            <i data-lucide="credit-card" size="22"></i>
+            <span>Pay</span>
+        </div>
+        <div class="nav-item">
+            <i data-lucide="shopping-cart" size="22"></i>
+            <span>Shop</span>
+        </div>
+        <div class="nav-item active">
+            <i data-lucide="help-circle" size="22"></i>
+            <span>Help</span>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        function appendMessage(text, isUser) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            msgDiv.textContent = text;
+            chatWindow.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            appendMessage(query, true);
+            userInput.value = '';
+
+            typingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        phone_number: "9876543210"
+                    })
+                });
+
+                const data = await response.json();
+                typingIndicator.style.display = 'none';
+                appendMessage(data.answer || "Sorry, I'm having trouble connecting right now.", false);
+
+                if (data.needs_escalation) {
+                    showEscalationUI();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.style.display = 'none';
+                appendMessage("Network error. Please check your connection.", false);
+            }
+        }
+
+        function showEscalationUI() {
+            setTimeout(() => {
+                const callDiv = document.createElement('div');
+                callDiv.className = 'message ai-message';
+                callDiv.style.background = '#FFF0F0';
+                callDiv.style.border = '1px solid #FFCDCD';
+                callDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px; color: #E40000; font-weight: 700;">
+                        <i data-lucide="phone-call" class="calling-animation"></i>
+                        <span>Initiating AI Voice Call...</span>
+                    </div>
+                `;
+                chatWindow.appendChild(callDiv);
+                lucide.createIcons();
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }, 1000);
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendSuggestion(text) {
+            userInput.value = text;
+            sendMessage();
+        }
+    </script>
+</body>
+
+</html>
