@@ -1,0 +1,17 @@
+{
+  "name": "telecomcare-ai",
+  "version": "1.0.0",
+  "description": "TelecomCare AI Support Agent",
+  "main": "api/index.py",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "vercel": "^32.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
