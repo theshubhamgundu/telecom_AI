@@ -1,23 +1,10 @@
-def handler(event, context):
-    """
-    Minimal Vercel serverless function for debugging
-    """
-    try:
-        return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body': '{"message": "TelecomCare AI is working!"}'
-        }
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'headers': {'Content-Type': 'application/json'},
-            'body': f'{{"error": "{str(e)}"}}'
-        }
+import sys
+import os
 
-# Vercel entry point
-def lambda_handler(event, context):
-    return handler(event, context)
+# Add the parent directory to sys.path so we can import main
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+from main import app as handler
+
+# Standard Vercel requires 'app' for FastAPI
+from main import app

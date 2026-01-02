@@ -13,15 +13,37 @@ load_dotenv()
 
 app = FastAPI(title="TelecomCare AI Support Agent")
 
+# Helper to get absolute path
+def get_path(filename):
+    return os.path.join(os.path.dirname(__file__), filename)
+
 # helper to load data
 def load_json_data(filename, default):
     try:
-        if os.path.exists(filename):
-            with open(filename, 'r') as f:
+        path = get_path(filename)
+        if os.path.exists(path):
+            with open(path, 'r') as f:
                 return json.load(f)
-    except:
-        pass
+    except Exception as e:
+        print(f"Error loading {filename}: {e}")
     return default
+
+# Mock data as fallback if files are missing on Vercel
+DEFAULT_USERS = {
+    "9876543210": {
+        "name": "Shubham Gundu",
+        "plan": "Unlimited 5G",
+        "data_limit": "1.5 GB/day",
+        "data_used": "1.4 GB",
+        "validity": "24 Days",
+        "last_bill": "Rs. 299",
+        "status": "Active",
+        "history": [
+            {"date": "2025-12-28", "query": "Slow internet", "resolution": "Network reset from backend"},
+            {"date": "2025-12-30", "query": "Data balance check", "resolution": "Provided via SMS"}
+        ]
+    }
+}
 
 # Add CORS middleware
 app.add_middleware(
@@ -32,12 +54,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Static file paths for Vercel
+static_dir = get_path("static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 @app.get("/")
 async def root():
-    return FileResponse('static/index.html')
+    index_path = os.path.join(static_dir, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "Airtel Care AI (Static UI missing)", "status": "healthy"}
 
 @app.get("/health")
 async def health_check():
@@ -48,10 +75,10 @@ async def chat_endpoint(request: dict):
     query = request.get("query", "").lower()
     phone_number = request.get("phone_number", "9876543210")
     
-    users = load_json_data('userdata.json', {})
-    tickets = load_json_data('tickets.json', [])
+    users = load_json_data('userdata.json', DEFAULT_USERS)
+    # tickets = load_json_data('tickets.json', []) # Not used in current logic but kept for extension
     
-    user = users.get(phone_number, {})
+    user = users.get(phone_number, DEFAULT_USERS["9876543210"])
     user_name = user.get("name", "User")
     history = user.get("history", [])
     
